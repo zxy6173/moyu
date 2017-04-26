@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>测试碰撞</title>
+        <style>
+
+            #cs{
+                /*width: 800px;
+                height:600px;*/
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            <canvas id="cs" width="800" height="600"></canvas>
+        </div>
+    </body>
+    <script src="js/util.js"></script>
+    <script>
+        var cs = document.getElementById("cs").getContext("2d");
+
+        var Role = function(x,y,width,height){
+            this.regX = width / 2;
+            this.regY = height / 2;
+            this.x = x + this.regX;
+            this.y = y  + this.regY;
+
+            this.w = width;
+            this.h = height;
+            this.color = "green";
+            this.rotate = Math.PI / 180 * 45;
+            this.draw = function(){
+                cs.save();
+                cs.translate(this.x ,this.y );
+                cs.fillStyle = this.color;
+                cs.rotate(this.rotate);
+                cs.fillRect(-this.regX,-this.regY,this.w,this.h);
+                cs.restore();
+            }
+        };
+
+
+        (function(){
+            var r1 = new Role(100,50,100,50);
+            var r2 = new Role(100,180,200,20);
+            document.getElementById("cs").onmousemove = function(event){
+
+                r1.x = event.clientX;
+                r1.y = event.clientY;
+            }
+            setInterval(function(){
+                cs.clearRect(0,0,800,600);
+                r1.draw();
+                r2.draw();
+                if(Util.impact(r1,r2)){
+                    r1.color = "red";
+                    r2.color = "red";
+                }else{
+                    r1.color = "green";
+                    r2.color = "green";
+                }
+                // console.log(Util);
+            },20);
+        }())
+
+    </script>
+</html>

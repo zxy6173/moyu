@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>魔域猎人</title>
+        <style>
+
+            .game-main{
+                margin:auto;
+                width:800px;
+                height:480px;
+                background: url(images/bg_lv0.jpg);
+                position: relative;
+                overflow: hidden;
+            }
+            img.bow{
+                position: absolute;
+                left:-30px;
+                top:170px;
+                -webkit-transform: rotate(0deg);
+            }
+            .cs{
+
+                position: absolute;
+                left:0;
+                top:0;
+                border:1px solid red;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="game-main" class="game-main">
+            <canvas id="cs" class="cs" width="800" height="480"></canvas>
+        </div>
+        <script src="images/role-list.js"></script>
+        <script>
+            var initImage = function(src){
+                var img = new Image();
+                img.src = src;
+                return img;
+            }
+            var images = {
+                "map":initImage("images/bg_lv0.jpg"),
+                "bow01":initImage("images/bow_agi_01.png"),
+                "arrow01":initImage("images/arrow_agi_01.png"),
+                "quanjiniao":initImage("images/monster2.png")
+            };
+            var compact = function(role1,role2){
+
+            }
+            setTimeout(function(){
+
+                var BaseRole = function(){
+                    this.cs = document.getElementById("cs").getContext("2d");
+                }
+                var MapRole = function(){
+                    this.x = 0;
+                    this.y = 0;
+                    this.draw = function(){
+                        this.cs.drawImage(images.map,this.x,this.y);
+                    }
+                    this.action = function(e){
+
+                        e = e || window.event;
+                        var d = Math.atan2(e.clientY - this.gameMain.offsetTop + document.body.scrollTop  - 240
+                            ,e.clientX - this.gameMain.offsetLeft + document.body.scrollLeft - 20);
+                        this.rotate = d;
+
+
+                    }.bind(this),
+                    this.init = function(){
+                        this.gameMain = document.getElementById("game-main");
+                        this.gameMain.onmousemove = this.action;
+                        this.gameMain.onclick = this.send;
+
+                    }
+                    this.send = function(){
+                        if(!this.bullet.isSend){
+                            this.bullet.isSend = true;
+                            this.bullet.initRotate = this.rotate;
+                        }
+
+
+                    }.bind(this)
+
+                    this.init();
+                }
+                MapRole.prototype = new BaseRole();
+                var BowRole = function(map){
+                    this.x = 20;
+                    this.y = 242;
+
+                    this.draw = function(){
+                        this.cs.save();
+                        this.cs.translate(this.x,this.y);
+                        this.cs.rotate(map.rotate);
+                        this.cs.drawImage(images.bow01,-44 ,-72);
+                        this.cs.restore();
+                    }
+
+                }
+                BowRole.prototype = new BaseRole();
+
+
+
+                var ArrowRole = function(map){
+                    this.x = 20;
+                    this.y = 242;
+                    this.initX = 20;
+                    this.initY = 242;
+                    this.isSend = false;
+                    this.distance = 0;
+                    this.isExist = true;
+                    this.draw = function(){
+                        this.cs.save();
+
+                        if(this.isSend){
+                            if(this.x < 0 || this.y < 0
+                                || this.x > 800 || this.y > 480){
+                                this.isExist = false;
+                            }
+                            this.x = Math.cos(this.initRotate) * this.distance + this.initX;
+                            this.y = Math.sin(this.initRotate) * this.distance + this.initY;
+                            this.cs.translate(this.x,this.y);
+                            this.cs.rotate(this.initRotate);
+                            this.distance+=15;
+                        }else{
+                            this.cs.translate(this.x,this.y);
+                            this.cs.rotate(map.rotate);
+                        }
+                        this.cs.drawImage(images.arrow01,-24,-7);
+                        this.cs.restore();
+
+
+                    }
+                }
+                ArrowRole.prototype = new BaseRole();
+
+                var Quanjiniao = function(){
+                    this.x = 800;
+                    this.y = parseInt(Math.random() * 8) * 60;
+                    this.width = 100;
+                    this.height = 85;
+                    this.speed = 3;
+                    this.runImage = quanjiniao_run;
+                    this.frame = 5;
+                    this.runIndex = 0;
+                    this.isExist = true;
+                    this.draw = function(){
+
+                        // console.log([images.quanjiniao_run,image.x,image.y,image.width,image.height,this.x,this.y]);
+
+                        var image = this.runImage.images[this.runIndex];
+                        console.log(this.runImage.images);
+                        this.cs.drawImage(images.quanjiniao,image.x,image.y,image.width,image.height,this.x,this.y,image.width,image.height);
+
+                        if(this.frame < 0){
+                            this.frame = 5;
+                            this.runIndex++;
+                            if(this.runIndex >= this.runImage.images.length){
+                                this.runIndex = 0;
+                            }
+                        }
+                        this.frame--;
+                        if(this.x < 130){
+                            // this.isExist = false;
+                            this.runImage = quanjiniao_attack;
+
+                        }else{
+                            this.x -= this.speed;
+                        }
+
+                    }
+                }
+                Quanjiniao.prototype = new BaseRole();
+                var gameRun = function(){
+                    var map = new MapRole();
+                    var bow = new BowRole(map);
+
+                    var arrow = new ArrowRole(map);
+                    map.bullet = arrow;
+
+                    var qjn = new Quanjiniao();
+                    var roleAry = [];
+                    var time = 0;
+                    setInterval(function(){
+                        if(!arrow.isExist){
+                            arrow = new ArrowRole(map);
+                            map.bullet = arrow;
+                        }
+                        if(time % 100 == 0){
+                            roleAry.push(new Quanjiniao());
+                        }
+                        map.draw();
+                        arrow.draw();
+                        bow.draw();
+                        roleAry = roleAry.filter(function(obj){
+                            // console.log(obj);
+                            if(obj.isExist){
+                                obj.draw();
+
+                            }
+                            return obj.isExist;
+
+                        });
+                        time++;
+                    },20);
+
+                }
+
+                gameRun();
+
+
+            },1000);
+
+
+        </script>
+    </body>
+
+
+</html>

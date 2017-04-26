@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>测试碰撞</title>
+        <style>
+            *{
+                margin: 0;
+                padding:0;
+            }
+            /*div{
+
+                border:1px solid red;
+                width: 800px;
+                height:600px;
+            }*/
+            #cs{
+                /*width: 800px;
+                height:600px;*/
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            <canvas id="testCanvas" width="980" height="580">
+        </div>
+    </body>
+    <!-- <script src="js/Vector2.js" type="text/javascript"></script>
+<script src="js/OBB.js" type="text/javascript"></script>
+<script src="js/CollisionDetector.js" type="text/javascript"></script> -->
+<script src="js/util.js"></script>
+<script src="js/easeljs.min.js"></script>
+    <script>
+    var OBB1, OBB1x = 100, OBB1y = 150, OBB1w = 200, OBB1h = 20, OBB1r = 0;
+    var OBB2, OBB2x = 100, OBB2y = 70, OBB2w = 100, OBB2h = 50, OBB2r = 0;
+    var canvas;
+    var stage;
+    var color;
+    var Rect = function(x,y,w,h){
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
+    }
+    function init() {
+
+        canvas = document.getElementById("testCanvas");
+        console.log(window);;
+        stage = new Stage(canvas);
+
+        Ticker.addListener(window);
+    }
+    o1 = new Rect(OBB1x,OBB1y,OBB1w,OBB1h);
+    o2 = new Rect(OBB2x,OBB2y,OBB2w,OBB2h);
+    function tick() {
+        stage.removeAllChildren();
+
+
+        // OBB1r += 2;
+        // OBB2r += 1;
+        // OBB1 = new OBB(new Vector2(OBB1x, OBB1y), OBB1w, OBB1h, OBB1r * Math.PI / 180);
+        // OBB2 = new OBB(new Vector2(OBB2x, OBB2y), OBB2w, OBB2h, OBB2r * Math.PI / 180);
+
+        o2.y++;
+        var r = Util.impact(o1, o2);
+
+        color=r?"red":"#00F";
+        OBB1 = new Container();
+        stage.addChild(OBB1);
+        OBB1.x = o1.x;
+        OBB1.y = o1.y;
+        var frame1 = new Shape();
+        frame1.graphics.beginFill(color).drawRect(0, 0, o1.w, o1.h);
+        // frame1.rotation = OBB1r;
+        // frame1.regX = o1.w / 2;
+        // frame1.regY = o1.h / 2;
+        OBB1.addChild(frame1);
+
+        OBB2 = new Container();
+        stage.addChild(OBB2);
+        OBB2.x = o2.x;
+        OBB2.y = o2.y;
+        var frame2 = new Shape();
+        frame2.graphics.beginFill(color).drawRect(0, 0, o2.w, o2.h);
+        // frame2.rotation = OBB2r;
+        // frame2.regX = o2.w / 2;
+        // frame2.regY = o2.h / 2;
+        OBB2.addChild(frame2);
+
+        stage.update();
+    }
+    init();
+
+    </script>
+</html>

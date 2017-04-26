@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>魔域猎人</title>
+        <style>
+            ul{
+                list-style: none;
+                padding: 0;
+            }
+            .quanjiniao li{
+                background: url(images/monster2.png) no-repeat;
+            }
+            .quanjiniao li:nth-of-type(1){
+                width:87px;
+                height:68px;
+                background-position: -154px -375px;
+            }
+            .quanjiniao li:nth-of-type(2){
+                width:70px;
+                height:68px;
+                background-position: -1px -215px;
+            }
+            .quanjiniao li:nth-of-type(3){
+                width:73px;
+                height:68px;
+                background-position: -1px -423px;
+            }
+            .quanjiniao li:nth-of-type(4){
+                width:70px;
+                height:66px;
+                background-position: -1px -148px;
+            }
+            .quanjiniao li:nth-of-type(5){
+                width:71px;
+                height:69px;
+                background-position: -1px -353px;
+            }
+            .quanjiniao li:nth-of-type(6){
+                width:70px;
+                height:68px;
+                background-position: -1px -284px;
+            }
+
+        </style>
+    </head>
+    <body>
+        <ul class="quanjiniao">
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+    </body>
+
+    <script>
+
+        var name = "global";
+        var obj = {
+            name:'obj',
+            dose:function(){
+                this.name = 'dose';
+                return function(){
+                    return this.name;
+                }
+            }
+        }
+        console.log(obj.dose().call());
+    </script>
+</html>

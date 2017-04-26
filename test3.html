@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>测试碰撞</title>
+        <style>
+            *{
+                margin:0;
+                padding:0;
+            }
+            #cs{
+                /*width: 800px;
+                height:600px;*/
+                border:1px solid red;
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            <canvas id="cs" width="980" height="580">
+        </div>
+    </body>
+<script src="js/easeljs-0.8.2.min.js"></script>
+<script src="js/util.js"></script>
+    <script>
+
+        (function(){
+            var stage = new createjs.Stage("cs");
+
+            var Rect = function(x,y,width,height,color){
+                this.x = x;
+                this.y = y;
+                this.w = width;
+                this.h = height;
+                this.color = color;
+                this.shape;;
+                this.draw = function(){
+                    this.shape = new createjs.Shape();
+
+                    this.shape.graphics.beginFill(this.color).drawRect(this.x,this.y,this.w,this.h);
+                    this.shape.regX = this.w /2;
+                    this.shape.regY = this.h /2;
+                    stage.addChild(this.shape);
+
+                }
+                // this.setX = function(x){
+                //     this.shape.x = x - this.x;
+                //
+                // }
+                // this.getX = function(){
+                //     return this.shape.x + this.x;
+                // }
+                // this.setY = function(y){
+                //     this.shape.y = y - this.y;
+                //
+                // }
+                // this.getY = function(){
+                //     return this.shape.y + this.y;
+                // }
+                // this.setColor = function(color){
+                //     var fill = new createjs.Graphics.Fill(color);
+                //      this.shape.graphics.append(fill);
+                //      console.log(this.shape.graphics);
+                //
+                // }
+
+            }
+
+            document.getElementById("cs").onmousemove = function(e){
+                stage.removeAllChildren();
+                var r1 = new Rect(e.clientX,e.clientY,100,50,"red");
+                var r2 = new Rect(200,200,200,20,"red");
+
+
+                if(Util.impact(r1,r2)){
+                    r1.color = "red";
+                    r2.color = "red";
+
+
+                }else{
+                    r1.color = "green";
+                    r2.color = "green";
+                }
+                r1.draw();
+                r2.draw();
+                stage.update();
+            };
+
+
+
+            // createjs.Ticker.addEventListener("tick", handleTick);
+            // var r1 = new Rect(100,0,100,50,"green");
+            // var r2 = new Rect(100,100,200,20,"green");
+            //  function handleTick(event) {
+            //      stage.removeAllChildren();
+            //         r1.y++;
+            //             if(Util.impact(r1,r2)){
+            //                 r1.color = "red";
+            //                 r2.color = "red";
+            //
+            //
+            //             }else{
+            //                 r1.color = "green";
+            //                 r2.color = "green";
+            //             }
+            //          r1.draw();
+            //          r2.draw();
+            //          stage.update();
+            //  }
+        })()
+    </script>
+</html>
